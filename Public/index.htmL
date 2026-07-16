@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>بن عباس | مساعدك الطبي الذكي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0B2545;
+    --navy-2:#123a63;
+    --gold:#C9A227;
+    --gold-soft:#e4c766;
+    --parchment:#F7F3E8;
+    --parchment-2:#efe8d6;
+    --teal:#146B6B;
+    --ink:#1B2430;
+    --danger:#8a2f2f;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;margin:0;}
+  body{
+    font-family:'Tajawal',sans-serif;
+    background:var(--parchment);
+    color:var(--ink);
+    display:flex;
+    flex-direction:column;
+    min-height:100vh;
+  }
+  header{
+    position:relative;
+    background:linear-gradient(180deg,var(--navy) 0%,var(--navy-2) 100%);
+    color:var(--parchment);
+    padding:22px 20px 26px;
+    overflow:hidden;
+    flex-shrink:0;
+  }
+  header::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    opacity:0.10;
+    background-image:
+      repeating-linear-gradient(45deg, var(--gold) 0 1px, transparent 1px 26px),
+      repeating-linear-gradient(-45deg, var(--gold) 0 1px, transparent 1px 26px);
+    pointer-events:none;
+  }
+  .header-inner{
+    position:relative;
+    z-index:1;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    max-width:760px;
+    margin:0 auto;
+  }
+  .logo-mark{
+    width:52px;height:52px;flex-shrink:0;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, var(--gold-soft), var(--gold) 70%);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 0 0 3px rgba(201,162,39,0.25);
+  }
+  .logo-mark svg{width:28px;height:28px;}
+  .title-block h1{
+    font-family:'Amiri',serif;
+    font-size:26px;
+    margin:0;
+    letter-spacing:0.5px;
+  }
+  .title-block p{
+    margin:2px 0 0;
+    font-size:13px;
+    color:var(--gold-soft);
+    font-weight:400;
+  }
+  .disclaimer{
+    max-width:760px;
+    margin:14px auto 0;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(201,162,39,0.35);
+    border-radius:10px;
+    padding:10px 14px;
+    font-size:12.5px;
+    line-height:1.7;
+    color:#e9e4d3;
+    position:relative;
+    z-index:1;
+  }
+  .disclaimer b{color:var(--gold-soft);}
+  main{
+    flex:1;
+    max-width:760px;
+    width:100%;
+    margin:0 auto;
+    padding:18px 16px 140px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .empty-state{
+    margin-top:40px;
+    text-align:center;
+    color:#6b6154;
+  }
+  .empty-state .mark{
+    font-family:'Amiri',serif;
+    font-size:19px;
+    color:var(--navy);
+    margin-bottom:6px;
+  }
+  .suggestions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    justify-content:center;
+    margin-top:16px;
+  }
+  .chip{
+    background:var(--parchment-2);
+    border:1px solid #ddd2b0;
+    color:var(--navy);
+    padding:8px 14px;
+    border-radius:20px;
+    font-size:13px;
+    cursor:pointer;
+    transition:all .15s ease;
+  }
+  .chip:hover{background:var(--gold-soft);border-color:var(--gold);}
+  .msg{
+    max-width:82%;
+    padding:12px 16px;
+    border-radius:14px;
+    font-size:15px;
+    line-height:1.9;
+    white-space:pre-wrap;
+  }
+  .msg.user{
+    align-self:flex-start;
+    background:var(--navy);
+    color:var(--parchment);
+    border-bottom-left-radius:4px;
+  }
+  .msg.ai{
+    align-self:flex-end;
+    background:#ffffff;
+    border:1px solid var(--parchment-2);
+    border-bottom-right-radius:4px;
+    box-shadow:0 1px 3px rgba(11,37,69,0.06);
+  }
+  .msg.ai .role-tag{
+    display:block;
+    font-size:11px;
+    color:var(--teal);
+    font-weight:700;
+    margin-bottom:5px;
+  }
+  .typing{
+    align-self:flex-end;
+    display:flex;
+    gap:4px;
+    padding:12px 16px;
+  }
+  .typing span{
+    width:6px;height:6px;border-radius:50%;
+    background:var(--teal);
+    animation:bounce 1.2s infinite ease-in-out;
+  }
+  .typing span:nth-child(2){animation-delay:.15s;}
+  .typing span:nth-child(3){animation-delay:.3s;}
+  @keyframes bounce{
+    0%,60%,100%{transform:translateY(0);opacity:.5;}
+    30%{transform:translateY(-5px);opacity:1;}
+  }
+  .input-bar{
+    position:fixed;
+    bottom:0;left:0;right:0;
+    background:linear-gradient(180deg, rgba(247,243,232,0) 0%, var(--parchment) 30%);
+    padding:18px 16px 20px;
+  }
+  .input-inner{
+    max-width:760px;
+    margin:0 auto;
+    display:flex;
+    gap:8px;
+    background:#fff;
+    border:1.5px solid #ddd2b0;
+    border-radius:16px;
+    padding:8px 10px;
+    box-shadow:0 4px 18px rgba(11,37,69,0.08);
+  }
+  textarea{
+    flex:1;
+    border:none;
+    outline:none;
+    resize:none;
+    font-family:'Tajawal',sans-serif;
+    font-size:15px;
+    padding:8px;
+    max-height:120px;
+    background:transparent;
+    color:var(--ink);
+  }
+  button.send{
+    background:var(--navy);
+    color:var(--gold-soft);
+    border:none;
+    border-radius:12px;
+    width:44px;height:44px;
+    flex-shrink:0;
+    cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    transition:background .15s ease;
+  }
+  button.send:hover{background:var(--navy-2);}
+  button.send:disabled{opacity:.4;cursor:default;}
+  button.send svg{width:20px;height:20px;transform:scaleX(-1);}
+  @media(max-width:480px){
+    .title-block h1{font-size:22px;}
+    .msg{max-width:90%;}
+  }
+</style>
+</head>
+<body>
+
+<div id="lockScreen" style="position:fixed;inset:0;background:linear-gradient(180deg,#0B2545,#123a63);display:flex;align-items:center;justify-content:center;z-index:50;padding:20px;">
+  <div style="background:#F7F3E8;border-radius:18px;padding:32px 26px;max-width:340px;width:100%;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,0.3);">
+    <div style="width:56px;height:56px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#e4c766,#C9A227 70%);margin:0 auto 14px;display:flex;align-items:center;justify-content:center;">
+      <svg viewBox="0 0 24 24" fill="none" width="28" height="28">
+        <circle cx="12" cy="12" r="9" stroke="#0B2545" stroke-width="1.6"/>
+        <rect x="10" y="9" width="4" height="4" fill="#0B2545"/>
+      </svg>
+    </div>
+    <div style="font-family:'Amiri',serif;font-size:22px;color:#0B2545;margin-bottom:4px;">بن عباس</div>
+    <div style="font-size:13px;color:#6b6154;margin-bottom:18px;">وصول خاص — أدخل الرمز السري</div>
+    <input id="passInput" type="password" placeholder="••••" style="width:100%;padding:12px 14px;border-radius:10px;border:1.5px solid #ddd2b0;font-size:16px;text-align:center;letter-spacing:4px;font-family:'Tajawal',sans-serif;outline:none;box-sizing:border-box;" onkeydown="if(event.key==='Enter')checkPass()">
+    <button onclick="checkPass()" style="width:100%;margin-top:12px;padding:12px;border:none;border-radius:10px;background:#0B2545;color:#e4c766;font-family:'Tajawal',sans-serif;font-size:15px;font-weight:700;cursor:pointer;">دخول</button>
+    <div id="passError" style="color:#8a2f2f;font-size:12px;margin-top:10px;display:none;">الرمز غير صحيح، حاول مرة أخرى</div>
+  </div>
+</div>
+
+<header>
+  <div class="header-inner">
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="9" stroke="#0B2545" stroke-width="1.6"/>
+        <ellipse cx="12" cy="12" rx="4" ry="9" stroke="#0B2545" stroke-width="1" opacity="0.6"/>
+        <line x1="3" y1="12" x2="21" y2="12" stroke="#0B2545" stroke-width="1" opacity="0.6"/>
+        <rect x="10" y="9" width="4" height="4" fill="#0B2545"/>
+      </svg>
+    </div>
+    <div class="title-block">
+      <h1>بن عباس</h1>
+      <p>مساعدك الطبي الذكي — للمرضى والأطباء</p>
+    </div>
+  </div>
+  <div class="disclaimer">
+    <b>تنبيه:</b> هاد المساعد كيقدم معلومات طبية عامة بواسطة الذكاء الاصطناعي، وما كيعوّضش تشخيص أو استشارة طبيب مختص. فحالة الطوارئ، تواصل فوراً مع أقرب مصلحة استعجالات.
+  </div>
+</header>
+
+<main id="chatArea">
+  <div class="empty-state" id="emptyState">
+    <div class="mark">أهلاً بيك</div>
+    <div>اطرح سؤالك الطبي بالدارجة، بالعربية، أو بالفرنسية</div>
+    <div class="suggestions">
+      <div class="chip" onclick="fillAndSend('شنو هي أعراض نقص الحديد؟')">أعراض نقص الحديد</div>
+      <div class="chip" onclick="fillAndSend('Explique-moi le syndrome néphrotique')">Syndrome néphrotique</div>
+      <div class="chip" onclick="fillAndSend('علاقة الضغط الدموي بالسكري')">الضغط والسكري</div>
+      <div class="chip" onclick="fillAndSend('كيفاش نتعامل مع نوبة هلع؟')">نوبة هلع</div>
+    </div>
+  </div>
+</main>
+
+<div class="input-bar">
+  <div class="input-inner">
+    <textarea id="inputBox" rows="1" placeholder="اكتب سؤالك الطبي هنا..." onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+    <button class="send" id="sendBtn" onclick="sendMessage()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"></line>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<script>
+const ACCESS_CODE = "3abbas2026";
+
+function checkPass(){
+  const val = document.getElementById('passInput').value;
+  if(val === ACCESS_CODE){
+    document.getElementById('lockScreen').style.display = 'none';
+  }else{
+    document.getElementById('passError').style.display = 'block';
+  }
+}
+
+const chatArea = document.getElementById('chatArea');
+const emptyState = document.getElementById('emptyState');
+const inputBox = document.getElementById('inputBox');
+const sendBtn = document.getElementById('sendBtn');
+
+let history = [];
+let isLoading = false;
+
+const SYSTEM_PROMPT = `أنت "بن عباس"، مساعد طبي ذكي متعدد اللغات (يفهم ويجاوب بالدارجة المغربية، العربية الفصحى، الفرنسية، والإنجليزية حسب لغة السؤال).
+- تخاطب فئتين: مرضى عاديين وأطباء/طلبة طب، فكيّف مستوى الشرح حسب صياغة السؤال (سؤال بسيط = جواب مبسط بدون مصطلحات معقدة؛ سؤال تقني/إكلينيكي = جواب علمي دقيق بالمصطلحات الطبية).
+- دائماً وضّح أن معلوماتك عامة وما كتعوّضش الفحص السريري أو استشارة طبيب حقيقي، خصوصا فالحالات اللي كتستدعي تشخيص أو علاج.
+- إلا كانت الأعراض المذكورة تدل على حالة إسعافية (ألم صدر حاد، صعوبة تنفس، فقدان وعي، نزيف حاد...)، بداية جوابك خاصها تحث المستخدم يتصل بالإسعاف أو يمشي للمستعجلات فوراً.
+- كون منظم: استعمل نقاط أو جداول قصيرة عند الحاجة، بدون إطالة زائدة.
+- ما تعطيش وصفات أدوية بجرعات دقيقة لمريض غير معروف الحالة ديالو بالكامل؛ عطي معلومات عامة وحث على استشارة الطبيب/الصيدلي للجرعة المضبوطة.`;
+
+function autoResize(el){
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+function handleKey(e){
+  if(e.key === 'Enter' && !e.shiftKey){
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function fillAndSend(text){
+  inputBox.value = text;
+  sendMessage();
+}
+
+function addMessage(role, text){
+  emptyState.style.display = 'none';
+  const div = document.createElement('div');
+  div.className = 'msg ' + (role === 'user' ? 'user' : 'ai');
+  if(role !== 'user'){
+    const tag = document.createElement('span');
+    tag.className = 'role-tag';
+    tag.textContent = 'بن عباس';
+    div.appendChild(tag);
+  }
+  const content = document.createElement('span');
+  content.textContent = text;
+  div.appendChild(content);
+  chatArea.appendChild(div);
+  window.scrollTo(0, document.body.scrollHeight);
+  return div;
+}
+
+function showTyping(){
+  const div = document.createElement('div');
+  div.className = 'typing';
+  div.id = 'typingIndicator';
+  div.innerHTML = '<span></span><span></span><span></span>';
+  chatArea.appendChild(div);
+  window.scrollTo(0, document.body.scrollHeight);
+}
+
+function hideTyping(){
+  const el = document.getElementById('typingIndicator');
+  if(el) el.remove();
+}
+
+async function sendMessage(){
+  const text = inputBox.value.trim();
+  if(!text || isLoading) return;
+
+  addMessage('user', text);
+  history.push({role:'user', content: text});
+  inputBox.value = '';
+  autoResize(inputBox);
+  isLoading = true;
+  sendBtn.disabled = true;
+  showTyping();
+
+  try{
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        system: SYSTEM_PROMPT,
+        messages: history
+      })
+    });
+    const data = await response.json();
+    hideTyping();
+
+    const textBlock = (data.content || []).map(b => b.text || '').filter(Boolean).join('\n');
+    const reply = textBlock || 'عذراً، ماقدرتش نجاوب دابا. جرب مرة أخرى.';
+
+    addMessage('ai', reply);
+    history.push({role:'assistant', content: reply});
+  }catch(err){
+    hideTyping();
+    addMessage('ai', 'وقع مشكل تقني. تأكد من الاتصال بالإنترنت وجرب مرة أخرى.');
+    console.error(err);
+  }finally{
+    isLoading = false;
+    sendBtn.disabled = false;
+  }
+}
+</script>
+
+</body>
+  </html>
