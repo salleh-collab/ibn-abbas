@@ -6,23 +6,29 @@ export default async function handler(req, res) {
   try {
     const { messages, system } = req.body;
 
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    const contents = (messages || []).map(m => ({
+      role: m.role === 'assistant' ? 'model' : 'user',
+      parts: [{ text: m.content }]
+    }));
+
+    const apiKey = process.env.GEMINI_API_KEY;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+
+    const response = await fetch(url, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1000,
-        system: system,
-        messages: messages
+        systemInstruction: { parts: [{ text: system }] },
+        contents: contents
       })
     });
 
     const data = await response.json();
-    res.status(200).json(data);
+
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text
+      || 'عذراً، ماقدرتش نجاوب دابا. جرب مرة أخرى.';
+
+    res.status(200).json({ content: [{ type: 'text', text }] });
   } catch (err) {
     res.status(500).json({ error: 'Server error', details: err.message });
   }
