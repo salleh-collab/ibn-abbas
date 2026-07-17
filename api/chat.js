@@ -25,11 +25,15 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
+    if (data?.error) {
+      return res.status(200).json({ content: [{ type: 'text', text: '⚠️ خطأ من Gemini: ' + JSON.stringify(data.error) }] });
+    }
+
     const text = data?.candidates?.[0]?.content?.parts?.[0]?.text
-      || 'عذراً، ماقدرتش نجاوب دابا. جرب مرة أخرى.';
+      || ('⚠️ رد غير متوقع: ' + JSON.stringify(data).slice(0, 500));
 
     res.status(200).json({ content: [{ type: 'text', text }] });
   } catch (err) {
     res.status(500).json({ error: 'Server error', details: err.message });
   }
-}
+                                      }
